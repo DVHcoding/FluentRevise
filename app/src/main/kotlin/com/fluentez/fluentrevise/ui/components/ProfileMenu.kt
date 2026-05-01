@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.fluentez.fluentrevise.R
@@ -31,7 +32,7 @@ fun ProfileMenu(
             Modifier
                 .background(Color.White)
                 .width(280.dp)
-                .padding(vertical = 8.dp),
+                .padding(top = 8.dp),
     ) {
         // User Info Section
         Row(
@@ -47,23 +48,27 @@ fun ProfileMenu(
                 contentScale = ContentScale.Crop,
                 modifier =
                     Modifier
-                        .size(48.dp)
+                        .size(42.dp)
                         .clip(CircleShape),
             )
 
             Spacer(modifier = Modifier.width(12.dp))
 
-            Column {
+            Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = "Đỗ Hùng",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     color = TextDark,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                 )
                 Text(
                     text = "dohungdzdz3@gmail.com",
                     fontSize = 12.sp,
                     color = Color.Gray,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                 )
             }
         }
