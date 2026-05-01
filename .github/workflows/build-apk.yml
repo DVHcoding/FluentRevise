@@ -1,0 +1,141 @@
+name: Build APK
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build & Sign APK
+    runs-on: ubuntu-latest
+
+    steps:
+      # ── 1. Checkout ────────────────────────────────────────────────────────
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      # ── 2. Java 17 ─────────────────────────────────────────────────────────
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: "17"
+          distribution: "temurin"
+          cache: gradle
+
+      # ── 3. Gradlew permission ──────────────────────────────────────────────
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      # ── 4. Validate gradle-wrapper.jar ────────────────────────────────────
+      - name: Validate gradle-wrapper.jar
+        run: |
+          WRAPPER_JAR="gradle/wrapper/gradle-wrapper.jar"
+          GRADLE_VERSION=$(grep distributionUrl gradle/wrapper/gradle-wrapper.properties \
+            | grep -oP '(?<=gradle-)\d+\.\d+' | head -1)
+          echo "Detected Gradle version: $GRADLE_VERSION"
+          if ! unzip -l "$WRAPPER_JAR" 2>/dev/null | grep -q "IDownload"; then
+            echo "⚠️  gradle-wrapper.jar bị hỏng, đang tải lại..."
+            curl -fsSL \
+              "https://raw.githubusercontent.com/gradle/gradle/v${GRADLE_VERSION}.0/gradle/wrapper/gradle-wrapper.jar" \
+              -o "$WRAPPER_JAR"
+            echo "✅ Đã tải gradle-wrapper.jar mới"
+          else
+            echo "✅ gradle-wrapper.jar hợp lệ"
+          fi
+
+      # ── 5. Cache Gradle ────────────────────────────────────────────────────
+      - name: Cache Gradle packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      # ── 6. Chuẩn bị Keystore ──────────────────────────────────────────────
+      #
+      #  Ưu tiên 1: Dùng secret KEYSTORE_BASE64 nếu đã cấu hình trong GitHub
+      #  Ưu tiên 2: Tự tạo keystore tạm (chỉ dùng để test, không upload Store)
+      #
+      #  Để dùng keystore cố định (recommended):
+      #    Chạy trên máy có Java: keytool -genkeypair -keystore release.jks
+      #      -alias fluentrevise -keyalg RSA -keysize 2048 -validity 10000
+      #    Encode: base64 -i release.jks | pbcopy    (macOS)
+      #    Thêm vào GitHub Secrets (Settings → Secrets → Actions):
+      #      KEYSTORE_BASE64   = nội dung base64 của file .jks
+      #      KEYSTORE_PASSWORD = mật khẩu keystore
+      #      KEY_ALIAS         = fluentrevise
+      #      KEY_PASSWORD      = mật khẩu key
+      #
+      - name: Prepare keystore
+        run: |
+          KEYSTORE_PATH="$RUNNER_TEMP/release.keystore"
+
+          if [ -n "${{ secrets.KEYSTORE_BASE64 }}" ]; then
+            echo "🔑 Dùng keystore từ GitHub Secrets..."
+            echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > "$KEYSTORE_PATH"
+            echo "KEYSTORE_PASS=${{ secrets.KEYSTORE_PASSWORD }}" >> $GITHUB_ENV
+            echo "KEY_ALIAS=${{ secrets.KEY_ALIAS }}"             >> $GITHUB_ENV
+            echo "KEY_PASS=${{ secrets.KEY_PASSWORD }}"           >> $GITHUB_ENV
+          else
+            echo "⚙️  Tạo keystore tạm (không có secret)..."
+            keytool -genkeypair \
+              -keystore "$KEYSTORE_PATH" \
+              -alias fluentrevise \
+              -keyalg RSA -keysize 2048 -validity 10000 \
+              -dname "CN=FluentRevise,OU=Dev,O=FluentRevise,L=HN,ST=HN,C=VN" \
+              -storepass fluentrevise123 \
+              -keypass fluentrevise123 \
+              -noprompt
+            echo "KEYSTORE_PASS=fluentrevise123" >> $GITHUB_ENV
+            echo "KEY_ALIAS=fluentrevise"        >> $GITHUB_ENV
+            echo "KEY_PASS=fluentrevise123"      >> $GITHUB_ENV
+          fi
+
+          echo "KEYSTORE_PATH=$KEYSTORE_PATH" >> $GITHUB_ENV
+          echo "✅ Keystore sẵn sàng tại $KEYSTORE_PATH"
+
+      # ── 7. Build Release APK (có ký) ──────────────────────────────────────
+      - name: Build Release APK
+        env:
+          KEYSTORE_PATH: ${{ env.KEYSTORE_PATH }}
+          KEYSTORE_PASSWORD: ${{ env.KEYSTORE_PASS }}
+          KEY_ALIAS: ${{ env.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ env.KEY_PASS }}
+        run: ./gradlew assembleRelease --stacktrace
+
+      # ── 8. Build Debug APK (nhỏ hơn, dùng để test nhanh) ─────────────────
+      - name: Build Debug APK
+        run: ./gradlew assembleDebug
+
+      # ── 9. Upload APK ──────────────────────────────────────────────────────
+      - name: Upload Release APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: FluentRevise-release-${{ github.run_number }}
+          path: app/build/outputs/apk/release/app-release.apk
+          retention-days: 1
+
+      - name: Upload Debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: FluentRevise-debug-${{ github.run_number }}
+          path: app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 1
+
+      # ── 10. Info ───────────────────────────────────────────────────────────
+      - name: Show APK sizes
+        run: |
+          echo "📦 Release APK:"
+          ls -lh app/build/outputs/apk/release/ || echo "Không tìm thấy"
+          echo "📦 Debug APK:"
+          ls -lh app/build/outputs/apk/debug/   || echo "Không tìm thấy"

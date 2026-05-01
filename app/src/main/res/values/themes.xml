@@ -1,0 +1,4 @@
+<resources>
+    <!-- Theme cơ bản – Compose tự quản lý màu sắc, chỉ cần theme gốc không có ActionBar -->
+    <style name="Theme.FluentRevise" parent="android:Theme.Material.Light.NoActionBar" />
+</resources>
