@@ -102,7 +102,8 @@ fun LoginScreen(onNavigateToHome: () -> Unit) {
                         .height(50.dp),
                     shape = RoundedCornerShape(12.dp),
                     border = BorderStroke(1.dp, Color(0xFFE0E0E0)),
-                    colors = ButtonDefaults.outlinedButtonColors(containerColor = Color.White)
+                    colors = ButtonDefaults.outlinedButtonColors(containerColor = Color.White),
+                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 0.dp)
                 ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -127,7 +128,8 @@ fun LoginScreen(onNavigateToHome: () -> Unit) {
                         .height(50.dp),
                     shape = RoundedCornerShape(12.dp),
                     border = BorderStroke(1.dp, Color(0xFFE0E0E0)),
-                    colors = ButtonDefaults.outlinedButtonColors(containerColor = Color.White)
+                    colors = ButtonDefaults.outlinedButtonColors(containerColor = Color.White),
+                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 0.dp)
                 ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -206,8 +208,8 @@ fun LoginScreen(onNavigateToHome: () -> Unit) {
                     IconButton(onClick = { passwordVisible = !passwordVisible }) {
                         Icon(
                             painter = painterResource(
-                                id = if (passwordVisible) R.drawable.ic_check_circle
-                                     else R.drawable.ic_uncheck_circle
+                                id = if (passwordVisible) R.drawable.ic_eye_open
+                                     else R.drawable.ic_eye_closed
                             ),
                             contentDescription = if (passwordVisible) "Ẩn mật khẩu" else "Hiện mật khẩu",
                             tint = DividerGray,
@@ -226,7 +228,7 @@ fun LoginScreen(onNavigateToHome: () -> Unit) {
                 onClick = onNavigateToHome,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(52.dp),
+                    .height(65.dp),
                 backgroundColor = LoginBlue
             )
 
