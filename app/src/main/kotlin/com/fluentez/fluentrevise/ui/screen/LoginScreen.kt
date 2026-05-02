@@ -45,15 +45,17 @@ fun LoginScreen(onNavigateToHome: () -> Unit) {
     var passwordVisible by remember { mutableStateOf(false) }
 
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(Color.White),
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 28.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 28.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Spacer(modifier = Modifier.height(72.dp))
 
@@ -62,29 +64,32 @@ fun LoginScreen(onNavigateToHome: () -> Unit) {
                 text = "Sign In",
                 fontSize = 30.sp,
                 fontWeight = FontWeight.Bold,
-                color = LoginBlue
+                color = LoginBlue,
             )
 
             Spacer(modifier = Modifier.height(12.dp))
 
             // ── Subtitle với link ──────────────────────────────────
-            val subtitleText = buildAnnotatedString {
-                withStyle(SpanStyle(color = TextDark.copy(alpha = 0.65f), fontSize = 14.sp)) {
-                    append("If you do not have an account, please visit the website ")
+            val subtitleText =
+                buildAnnotatedString {
+                    withStyle(SpanStyle(color = TextDark.copy(alpha = 0.65f), fontSize = 14.sp)) {
+                        append("If you do not have an account, please visit the website ")
+                    }
+                    pushStringAnnotation(tag = "URL", annotation = "https://fluentez.com")
+                    withStyle(SpanStyle(color = LinkOrange, fontWeight = FontWeight.SemiBold, fontSize = 14.sp)) {
+                        append("fluentez.com")
+                    }
+                    pop()
+                    withStyle(SpanStyle(color = TextDark.copy(alpha = 0.65f), fontSize = 14.sp)) {
+                        append(" to create one and use it.")
+                    }
                 }
-                pushStringAnnotation(tag = "URL", annotation = "https://fluentez.com")
-                withStyle(SpanStyle(color = LinkOrange, fontWeight = FontWeight.SemiBold, fontSize = 14.sp)) {
-                    append("fluentez.com")
-                }
-                pop()
-                withStyle(SpanStyle(color = TextDark.copy(alpha = 0.65f), fontSize = 14.sp)) {
-                    append(" to create one and use it.")
-                }
-            }
             ClickableText(
                 text = subtitleText,
-                style = androidx.compose.ui.text.TextStyle(textAlign = TextAlign.Center, lineHeight = 20.sp),
-                onClick = { /* TODO: open browser */ }
+                style =
+                    androidx.compose.ui.text
+                        .TextStyle(textAlign = TextAlign.Center, lineHeight = 20.sp),
+                onClick = { /* TODO: open browser */ },
             )
 
             Spacer(modifier = Modifier.height(32.dp))
@@ -92,28 +97,30 @@ fun LoginScreen(onNavigateToHome: () -> Unit) {
             // ── Social Buttons ────────────────────────────────────
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 // Facebook Button
                 OutlinedButton(
                     onClick = { /* TODO */ },
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(50.dp),
+                    modifier =
+                        Modifier
+                            .weight(1f)
+                            .height(50.dp),
                     shape = RoundedCornerShape(12.dp),
                     border = BorderStroke(1.dp, Color(0xFFE0E0E0)),
                     colors = ButtonDefaults.outlinedButtonColors(containerColor = Color.White),
-                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 0.dp)
+                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 0.dp),
                 ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
+                        horizontalArrangement = Arrangement.Center,
                     ) {
                         // Facebook icon
-                        Image(
+                        Icon(
                             painter = painterResource(id = R.drawable.ic_facebook),
                             contentDescription = "Facebook",
-                            modifier = Modifier.size(24.dp)
+                            modifier = Modifier.size(24.dp),
+                            tint = Color.Unspecified
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text("Facebook", color = TextDark, fontWeight = FontWeight.Medium, fontSize = 14.sp)
@@ -123,23 +130,25 @@ fun LoginScreen(onNavigateToHome: () -> Unit) {
                 // Google Button
                 OutlinedButton(
                     onClick = { /* TODO */ },
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(50.dp),
+                    modifier =
+                        Modifier
+                            .weight(1f)
+                            .height(50.dp),
                     shape = RoundedCornerShape(12.dp),
                     border = BorderStroke(1.dp, Color(0xFFE0E0E0)),
                     colors = ButtonDefaults.outlinedButtonColors(containerColor = Color.White),
-                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 0.dp)
+                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 0.dp),
                 ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
+                        horizontalArrangement = Arrangement.Center,
                     ) {
                         // Google icon
-                        Image(
+                        Icon(
                             painter = painterResource(id = R.drawable.ic_google),
                             contentDescription = "Google",
-                            modifier = Modifier.size(24.dp)
+                            modifier = Modifier.size(24.dp),
+                            tint = Color.Unspecified
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text("Google", color = TextDark, fontWeight = FontWeight.Medium, fontSize = 14.sp)
@@ -152,13 +161,13 @@ fun LoginScreen(onNavigateToHome: () -> Unit) {
             // ── "Or" Divider ──────────────────────────────────────
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 HorizontalDivider(modifier = Modifier.weight(1f), color = DividerGray.copy(alpha = 0.5f))
                 Text(
                     text = "  Or  ",
                     color = DividerGray,
-                    fontSize = 13.sp
+                    fontSize = 13.sp,
                 )
                 HorizontalDivider(modifier = Modifier.weight(1f), color = DividerGray.copy(alpha = 0.5f))
             }
@@ -174,14 +183,15 @@ fun LoginScreen(onNavigateToHome: () -> Unit) {
                 },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(12.dp),
-                colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedContainerColor = FieldBackground,
-                    focusedContainerColor = Color.White,
-                    unfocusedBorderColor = Color.Transparent,
-                    focusedBorderColor = LoginBlue
-                ),
+                colors =
+                    OutlinedTextFieldDefaults.colors(
+                        unfocusedContainerColor = FieldBackground,
+                        focusedContainerColor = Color.White,
+                        unfocusedBorderColor = Color.Transparent,
+                        focusedBorderColor = LoginBlue,
+                    ),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                singleLine = true
+                singleLine = true,
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -195,29 +205,39 @@ fun LoginScreen(onNavigateToHome: () -> Unit) {
                 },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(12.dp),
-                colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedContainerColor = FieldBackground,
-                    focusedContainerColor = Color.White,
-                    unfocusedBorderColor = Color.Transparent,
-                    focusedBorderColor = LoginBlue
-                ),
-                visualTransformation = if (passwordVisible) VisualTransformation.None
-                                       else PasswordVisualTransformation(),
+                colors =
+                    OutlinedTextFieldDefaults.colors(
+                        unfocusedContainerColor = FieldBackground,
+                        focusedContainerColor = Color.White,
+                        unfocusedBorderColor = Color.Transparent,
+                        focusedBorderColor = LoginBlue,
+                    ),
+                visualTransformation =
+                    if (passwordVisible) {
+                        VisualTransformation.None
+                    } else {
+                        PasswordVisualTransformation()
+                    },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 trailingIcon = {
                     IconButton(onClick = { passwordVisible = !passwordVisible }) {
                         Icon(
-                            painter = painterResource(
-                                id = if (passwordVisible) R.drawable.ic_eye_open
-                                     else R.drawable.ic_eye_closed
-                            ),
+                            painter =
+                                painterResource(
+                                    id =
+                                        if (passwordVisible) {
+                                            R.drawable.ic_eye_open
+                                        } else {
+                                            R.drawable.ic_eye_closed
+                                        },
+                                ),
                             contentDescription = if (passwordVisible) "Ẩn mật khẩu" else "Hiện mật khẩu",
                             tint = DividerGray,
-                            modifier = Modifier.size(22.dp)
+                            modifier = Modifier.size(22.dp),
                         )
                     }
                 },
-                singleLine = true
+                singleLine = true,
             )
 
             Spacer(modifier = Modifier.height(28.dp))
@@ -226,28 +246,30 @@ fun LoginScreen(onNavigateToHome: () -> Unit) {
             AppButton(
                 text = "Log In",
                 onClick = onNavigateToHome,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(65.dp),
-                backgroundColor = LoginBlue
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(65.dp),
+                backgroundColor = LoginBlue,
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
             // ── Sign Up Link ──────────────────────────────────────
-            val signUpText = buildAnnotatedString {
-                withStyle(SpanStyle(color = TextDark.copy(alpha = 0.6f), fontSize = 14.sp)) {
-                    append("Don't have account? ")
+            val signUpText =
+                buildAnnotatedString {
+                    withStyle(SpanStyle(color = TextDark.copy(alpha = 0.6f), fontSize = 14.sp)) {
+                        append("Don't have account? ")
+                    }
+                    pushStringAnnotation(tag = "SIGNUP", annotation = "signup")
+                    withStyle(SpanStyle(color = LoginBlue, fontWeight = FontWeight.SemiBold, fontSize = 14.sp)) {
+                        append("Sign Up")
+                    }
+                    pop()
                 }
-                pushStringAnnotation(tag = "SIGNUP", annotation = "signup")
-                withStyle(SpanStyle(color = LoginBlue, fontWeight = FontWeight.SemiBold, fontSize = 14.sp)) {
-                    append("Sign Up")
-                }
-                pop()
-            }
             ClickableText(
                 text = signUpText,
-                onClick = { /* TODO: navigate to sign up */ }
+                onClick = { /* TODO: navigate to sign up */ },
             )
         }
     }
