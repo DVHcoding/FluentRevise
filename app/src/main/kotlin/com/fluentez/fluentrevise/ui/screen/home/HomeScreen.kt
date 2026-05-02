@@ -1,5 +1,6 @@
 package com.fluentez.fluentrevise.ui.screen.home
 
+import com.fluentez.fluentrevise.ui.components.BannerSlider
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -88,14 +89,15 @@ fun HomeScreen(onNavigateToLearning: () -> Unit) {
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // 2. Banner
-            Image(
-                painter = painterResource(id = com.fluentez.fluentrevise.R.drawable.img_banner),
-                contentDescription = "Happy Weekend Banner",
-                contentScale = ContentScale.FillWidth,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(16.dp))
+            // 2. Banner Slider
+            BannerSlider(
+                imageUrls = listOf(
+                    "https://media.fluentez.com/uploads/uploads/jN4c8XBxPR8L-YqMN89wi.webp",
+                    "https://media.fluentez.com/uploads/uploads/Y-hoRiJA85jLFyMG95_Zb.webp",
+                    "https://media.fluentez.com/uploads/uploads/Z_sL-J3jksBP0QsMPMJsC.webp",
+                ),
+                autoScrollDelayMs = 7_000L,
+                modifier = Modifier.fillMaxWidth(),
             )
 
             Spacer(modifier = Modifier.height(24.dp))
