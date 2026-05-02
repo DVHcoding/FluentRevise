@@ -1,5 +1,9 @@
 package com.fluentez.fluentrevise.ui.navigation
 
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -19,19 +23,46 @@ import com.fluentez.fluentrevise.ui.screen.home.HomeScreen
 @Composable
 fun AppNavGraph(
     navController: NavHostController = rememberNavController(),
-    startDestination: String = Routes.WELCOME // Trạm xuất phát là Welcome Screen
+    startDestination: String = Routes.WELCOME,
 ) {
     NavHost(
         navController = navController,
-        startDestination = startDestination
+        startDestination = startDestination,
+        enterTransition = {
+            fadeIn(animationSpec = tween(100)) +
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left,
+                    animationSpec = tween(100),
+                )
+        },
+        exitTransition = {
+            fadeOut(animationSpec = tween(100)) +
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left,
+                    animationSpec = tween(100),
+                )
+        },
+        popEnterTransition = {
+            fadeIn(animationSpec = tween(100)) +
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right,
+                    animationSpec = tween(100),
+                )
+        },
+        popExitTransition = {
+            fadeOut(animationSpec = tween(100)) +
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right,
+                    animationSpec = tween(100),
+                )
+        },
     ) {
-
         // Trạm 1: Welcome Screen
         composable(Routes.WELCOME) {
             WelcomeScreen(
                 onNavigateToLogin = {
                     navController.navigate(Routes.LOGIN)
-                }
+                },
             )
         }
 
@@ -43,7 +74,7 @@ fun AppNavGraph(
                     navController.navigate(Routes.HOME) {
                         popUpTo(Routes.WELCOME) { inclusive = true }
                     }
-                }
+                },
             )
         }
 
