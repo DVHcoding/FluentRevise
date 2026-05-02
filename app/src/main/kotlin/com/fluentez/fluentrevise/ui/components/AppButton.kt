@@ -36,7 +36,7 @@ fun AppButton(
             containerColor = backgroundColor,
             contentColor = textColor
         ),
-        shape = RoundedCornerShape(12.dp) // Bo góc nút chuẩn 12dp cho toàn bộ app
+        shape = RoundedCornerShape(12.dp)
     ) {
         Text(
             text = text,

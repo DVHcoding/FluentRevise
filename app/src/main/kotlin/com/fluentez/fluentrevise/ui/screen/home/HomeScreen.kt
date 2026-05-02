@@ -100,7 +100,7 @@ fun HomeScreen(onNavigateToLearning: () -> Unit) {
                 modifier = Modifier.fillMaxWidth(),
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(14.dp))
 
             // 3. Action Row: Button and Filter
             Row(
